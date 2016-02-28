@@ -3,8 +3,8 @@ using System.Collections;
 
 public class CreateGrid : MonoBehaviour {
 	public Transform tilePrefab;
-	private float x_off = .8f;
-	private float y_off = 1.05f;
+	public static float x_off = .8f;
+	public static float y_off = 1.05f;
 	// Use this for initialization
 	void Start () {
 		for (int x = -6; x <= 6; x++){
@@ -16,6 +16,8 @@ public class CreateGrid : MonoBehaviour {
 				}
 			}
 		}
+
+
 	}
 
 	// Update is called once per frame
