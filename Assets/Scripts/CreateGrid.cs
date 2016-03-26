@@ -9,7 +9,7 @@ public class CreateGrid : MonoBehaviour {
 	void Start () {
 		for (int x = -6; x <= 6; x++){
 			for (int y = -5; y <= 5; y++){
-				if (Mathf.Abs(y-x) < 6){ 
+				if (Mathf.Abs(y-x) < 6){
 					Transform clone;
 					clone = (Transform)Instantiate(tilePrefab, new Vector2(x*x_off, (y*y_off) - (x*.5f*y_off) ), tilePrefab.rotation);
 					clone.parent = transform;

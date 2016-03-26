@@ -7,13 +7,18 @@ public class InitialPlayer : MonoBehaviour {
 	public static float y_off = 1.05f;
 	// Use this for initialization
 	void Start () {
-		int y = 1;	
-		for (int x=0; x < 6; x++){
+		CreatePlayer (-3, 2);
+		CreatePlayer(-6,-3);
+		CreatePlayer(-3,-5);
+		CreatePlayer (-1, -1);
+		CreatePlayer (-6, -5);
+		CreatePlayer (5, 4);
+	}
 
-			Transform clone;
-			clone = (Transform)Instantiate(tilePrefab, new Vector2(x*x_off, (y*y_off) - (x*.5f*y_off) ), tilePrefab.rotation);
-			clone.parent = transform;
-		}
+	void CreatePlayer(int x, int y){
+		Transform clone;
+		clone = (Transform)Instantiate(tilePrefab, new Vector2(x*x_off, (y*y_off) - (x*.5f*y_off) ), tilePrefab.rotation);
+		clone.parent = transform;
 	}
 	// Update is called once per frame
 	void Update () {
