@@ -17,7 +17,7 @@ public class DealCard : MonoBehaviour {
 		WWW www = new WWW("http://127.0.0.1:5000/", body, headers); 
 		yield return www;
 
-		Debug.Log (player.id);
+		//Debug.Log (player.id);
 		//Debug.Log(www.text);
 	
 	}
