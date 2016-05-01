@@ -34,12 +34,23 @@ public class SelectPlayer : MonoBehaviour {
 	}
 
 	void OnMouseDown(){
+		//If already selected, unselect
 		if (selected) {
 			ResetColors ();
-		} else {
-			SetMoveColor (Color.green);
-			selected = true;
+			return;
+		} 	
+
+		//If another player is already selected, don't allow a selection
+		foreach (Transform child in transform.parent) 
+		{
+			if (child !=transform)
+				if (child.GetComponent<SelectPlayer>().selected)
+					return;
 		}
+			
+		//Selects the player
+		SetMoveColor (Color.green);
+		selected = true;
 	}
 
 	public void ResetColors(){
