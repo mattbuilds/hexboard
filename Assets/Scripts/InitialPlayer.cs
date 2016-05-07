@@ -5,7 +5,7 @@ public class InitialPlayer : MonoBehaviour {
 	public Transform tilePrefab;
 	// Use this for initialization
 	void Start () {
-		CreatePlayer (-5, -1);
+		CreatePlayer (-4, -1);
 		CreatePlayer(-4,-3);
 	}
 

@@ -21,9 +21,12 @@ public class SelectPlayer : MonoBehaviour {
 	public GameObject board;
 	public CreateGrid createGridScript;
 	public bool selected;
+	private GameObject me;
+
 	// Use this for initialization
 	void Start () {
 		board = GameObject.Find ("Board");
+		me = GameObject.Find("Me");
 		createGridScript = board.GetComponent<CreateGrid> ();
 		selected = false;
 	}
@@ -34,6 +37,10 @@ public class SelectPlayer : MonoBehaviour {
 	}
 
 	void OnMouseDown(){
+		//If not your turn do nothing
+		if (!me.GetComponent<MyTurnScript> ().my_turn)
+			return; 
+		
 		//If already selected, unselect
 		if (selected) {
 			ResetColors ();
@@ -47,6 +54,16 @@ public class SelectPlayer : MonoBehaviour {
 				if (child.GetComponent<SelectPlayer>().selected)
 					return;
 		}
+
+		//If a card is already selected, don't allow a selection of a player
+		foreach (Transform child in transform.parent.parent)
+		{
+			if (child.name == "card") {
+				if (child.GetComponent<SelectCard> ().selected)
+					return;
+			}
+		}
+
 			
 		//Selects the player
 		SetMoveColor (Color.green);
@@ -58,7 +75,7 @@ public class SelectPlayer : MonoBehaviour {
 		SetMoveColor (Color.white);
 	}
 
-	private void SetMoveColor(Color color){
+	public void SetMoveColor(Color color){
 		Vector2 player = PositionCoordinates.PositionToCoordinates(transform.position);
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++) {
