@@ -20,8 +20,12 @@ public class SelectHex : MonoBehaviour {
 
 		//For moving a player
 		if (sr.color == Color.green){
+			
 			move_player.GetComponent<SelectPlayer> ().ResetColors ();
 			move_player.transform.position = transform.position;
+
+			//Send Move to Server
+			move_player.GetComponent<SelectPlayer>().SendMove();
 
 			//End Turn
 			me.GetComponent<MyTurnScript> ().my_turn = false;

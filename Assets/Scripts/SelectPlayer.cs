@@ -21,6 +21,7 @@ public class SelectPlayer : MonoBehaviour {
 	public GameObject board;
 	public CreateGrid createGridScript;
 	public bool selected;
+	public int meeple_id;
 	private GameObject me;
 
 	// Use this for initialization
@@ -63,7 +64,6 @@ public class SelectPlayer : MonoBehaviour {
 					return;
 			}
 		}
-
 			
 		//Selects the player
 		SetMoveColor (Color.green);
@@ -73,6 +73,17 @@ public class SelectPlayer : MonoBehaviour {
 	public void ResetColors(){
 		selected = false;
 		SetMoveColor (Color.white);
+	}
+
+	public void SendMove(){
+		Vector2 player = PositionCoordinates.PositionToCoordinates(transform.position);
+		BoardSpace board_space = new BoardSpace();
+		board_space.x_loc = Convert.ToInt32(player.x);
+		board_space.y_loc = Convert.ToInt32(player.y);
+
+		//Convert board_space to JSON
+
+		//Change HTTP Request to be able to receive a POST body
 	}
 
 	public void SetMoveColor(Color color){
