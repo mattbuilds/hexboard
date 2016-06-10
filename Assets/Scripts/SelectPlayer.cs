@@ -20,14 +20,12 @@ public static class  PositionCoordinates{
 public class SelectPlayer : MonoBehaviour {
 	public GameObject board;
 	public CreateGrid createGridScript;
-	public bool selected;
+	public bool selected, my_player;
 	public int meeple_id;
-	private GameObject me;
 
 	// Use this for initialization
 	void Start () {
 		board = GameObject.Find ("Board");
-		me = GameObject.Find("Me");
 		createGridScript = board.GetComponent<CreateGrid> ();
 		selected = false;
 	}
@@ -38,8 +36,12 @@ public class SelectPlayer : MonoBehaviour {
 	}
 
 	void OnMouseDown(){
+		//This is the other players, stop trying to do shit with it
+		if (!my_player)
+			return;
+
 		//If not your turn do nothing
-		if (!me.GetComponent<MyTurnScript> ().my_turn)
+		if (!Config.instance.turn)
 			return; 
 		
 		//If already selected, unselect
@@ -75,6 +77,11 @@ public class SelectPlayer : MonoBehaviour {
 		SetMoveColor (Color.white);
 	}
 
+	public void Move(int x, int y){
+		transform.position = PositionCoordinates.CoordiatesToPosition (x, y);
+		transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
+	}
+
 	public void SendMove(){
 		Vector2 player = PositionCoordinates.PositionToCoordinates(transform.position);
 		BoardSpace board_space = new BoardSpace();
@@ -82,8 +89,17 @@ public class SelectPlayer : MonoBehaviour {
 		board_space.y_loc = Convert.ToInt32(player.y);
 
 		//Convert board_space to JSON
+		string json = JsonUtility.ToJson(board_space);
 
 		//Change HTTP Request to be able to receive a POST body
+		string url = "/game/"+Config.instance.game_id+"/move/" + meeple_id;
+		//httpGet (url, username, password);
+		Debug.Log(json);
+		StartCoroutine(HttpRequest.SendRequest(url, HandleMoveMeep, "POST", json, Config.instance.username, Config.instance.password));
+	}
+
+	public void HandleMoveMeep(string response){
+		Debug.Log (response);
 	}
 
 	public void SetMoveColor(Color color){

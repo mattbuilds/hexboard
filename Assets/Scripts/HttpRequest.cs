@@ -14,7 +14,20 @@ public static class HttpRequest
 	}
 
 	public static IEnumerator SendRequest(string url, System.Action<string> onSuccess, string method, string body = null, string username = null, string password =null){
-		UnityWebRequest www = UnityWebRequest.Get("http://127.0.0.1:5000"+url);
+		UnityWebRequest www;
+		if (method.Equals ("GET")) {
+			www = UnityWebRequest.Get ("http://127.0.0.1:5000" + url);
+		} else {
+			WWWForm form = new WWWForm ();
+			form.AddField ("bs", "bs");
+			www = UnityWebRequest.Post ("http://127.0.0.1:5000" + url, form);
+
+			byte[] rawJson = System.Text.Encoding.UTF8.GetBytes(body);
+			UploadHandler upload = new UploadHandlerRaw(rawJson);
+			upload.contentType = "application/json";
+			www.uploadHandler = upload;
+		} 
+			
 		www.SetRequestHeader ("Content-Type", "application/json");
 		www.SetRequestHeader ("Authorization", getBasic (username, password));
 

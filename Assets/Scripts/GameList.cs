@@ -28,10 +28,8 @@ public class GameList : MonoBehaviour {
 
 	public void getGames(){
 		string url = "/game";
-		string username = "matt";
-		string password = "test";
 		//httpGet (url, username, password);
-		StartCoroutine(HttpRequest.SendRequest(url, handleGetGames, "GET", "body", username, password));
+		StartCoroutine(HttpRequest.SendRequest(url, handleGetGames, "GET", "body","matt", "test"));
 	}
 
 	public void handleGetGames(string response){
@@ -46,7 +44,7 @@ public class GameList : MonoBehaviour {
 
 			GameObject clone;
 			clone = (GameObject)Instantiate(button_game_prefab, new Vector3(0,0,0), Quaternion.identity);
-			clone.transform.parent = transform;
+			clone.transform.SetParent(transform);
 			clone.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
 			clone.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f,y,0.0f);
 			clone.transform.Find ("Id").GetComponent<UnityEngine.UI.Text>().text = collection.games [i].id.ToString();
@@ -54,5 +52,13 @@ public class GameList : MonoBehaviour {
 		} 
 
 		Debug.Log (collection.games[0].status);
+	}
+
+	public void createGame(){
+
+	}
+
+	public void joinGame(){
+
 	}
 }

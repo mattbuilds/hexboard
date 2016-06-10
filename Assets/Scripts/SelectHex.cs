@@ -20,7 +20,8 @@ public class SelectHex : MonoBehaviour {
 
 		//For moving a player
 		if (sr.color == Color.green){
-			
+
+			//If fine, move shit
 			move_player.GetComponent<SelectPlayer> ().ResetColors ();
 			move_player.transform.position = transform.position;
 
@@ -28,22 +29,30 @@ public class SelectHex : MonoBehaviour {
 			move_player.GetComponent<SelectPlayer>().SendMove();
 
 			//End Turn
-			me.GetComponent<MyTurnScript> ().my_turn = false;
+			Config.instance.turn = false;
 		}
 
 		//For playing a card
 		if (sr.color == Color.cyan) {
 			//Place card at space
 			foreach (Transform child in me.transform) {
-				if (child.name == "card") {
-					child.GetComponent<SelectCard> ().ResetPlayers ();
-					child.transform.position = new Vector3(transform.position.x, transform.position.y, child.transform.position.z);
-					child.GetComponent<SelectCard> ().on_board = true;
+				if (child.name == "Hand") {
+					foreach (Transform grandchild in child) {
+						if (grandchild.GetComponent<SelectCard> ().selected) {
+							grandchild.GetComponent<SelectCard> ().ResetPlayers ();
+							grandchild.transform.position = new Vector3 (transform.position.x, transform.position.y, child.transform.position.z);
+							grandchild.GetComponent<SelectCard> ().on_board = true;
+							grandchild.GetComponent<SelectCard> ().SendPlayCard ();
+							grandchild.transform.parent = null;
+							child.GetComponent<InitialHand> ().RemoveFromHand (grandchild.GetComponent<SelectCard> ().id);
+							child.GetComponent<InitialHand> ().RedrawCardsinHand ();
+						}
+					}
 				}
 			}
 
 			//End Turn
-			me.GetComponent<MyTurnScript> ().my_turn = false;
+			Config.instance.turn = false;
 		}
 	}
 }
