@@ -29,7 +29,8 @@ public static class HttpRequest
 		} 
 			
 		www.SetRequestHeader ("Content-Type", "application/json");
-		www.SetRequestHeader ("Authorization", getBasic (username, password));
+		if (username != null && password != null)
+			www.SetRequestHeader ("Authorization", getBasic (username, password));
 
 		yield return www.Send();
 

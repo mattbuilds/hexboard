@@ -33,6 +33,7 @@ public class Config : MonoBehaviour {
 	}
 
 	void HandleGameState(string response){
+		Debug.Log (response);
 		CurrentGame game = JsonUtility.FromJson<CurrentGame> (response);
 
 		//Check turn

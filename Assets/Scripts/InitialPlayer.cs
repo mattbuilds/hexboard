@@ -42,12 +42,13 @@ public class Player{
 	public int id;
 	public int score;
 	public string username;
+	public string password;
 }
 
 
 [System.Serializable]
-public class Hand{
-	public List<Card> hand;
+public class Cards{
+	public List<Card> cards;
 }
 
 [System.Serializable]

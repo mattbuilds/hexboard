@@ -3,7 +3,7 @@ using System.Collections;
 
 public class InitialHand : MonoBehaviour {
 	public Transform tilePrefab;
-	private Hand cards;
+	private Cards hand;
 	// Use this for initialization
 	void Start () {
 		GetInitialHand ();
@@ -15,32 +15,32 @@ public class InitialHand : MonoBehaviour {
 	}
 		
 	public void RemoveFromHand(int id){
-		for (int i = 0; i< cards.hand.Count; i++){
-			if (cards.hand [i].id == id) {
-				cards.hand.RemoveAt (i);
+		for (int i = 0; i< hand.cards.Count; i++){
+			if (hand.cards [i].id == id) {
+				hand.cards.RemoveAt (i);
 			}
 		}
 	}
 
 	public void RedrawCardsinHand(){
-		for (int i = 0; i < cards.hand.Count; i++) {
+		for (int i = 0; i < hand.cards.Count; i++) {
 			Transform clone;
 			GameObject card_object;
 			float y = 3f + (-1.2f * i);
-			card_object = GameObject.Find ("card_" + cards.hand [i].id);
+			card_object = GameObject.Find ("card_" + hand.cards [i].id);
 			if (card_object) {
 				clone = card_object.transform;
 				clone.position = new Vector3 (-7f, y, -5f);
 			} else {
 				clone = (Transform)Instantiate (tilePrefab, new Vector3 (-7f, y, -5f), tilePrefab.rotation);
-				if ( cards.hand[i].value.Equals("P")){
-					clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite>("moving_" + cards.hand[i].direction);
-					Config.instance.SetCardColor (clone.gameObject, cards.hand [i].color);
+				if ( hand.cards[i].value.Equals("P")){
+					clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite>("moving_" + hand.cards[i].direction);
+					Config.instance.SetCardColor (clone.gameObject, hand.cards [i].color);
 				}else{
-					clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite>("card_" + cards.hand [i].value);
+					clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite>("card_" + hand.cards [i].value);
 				}
-				clone.GetComponent<SelectCard> ().id = cards.hand [i].id;
-				clone.name = "card_" + cards.hand [i].id;
+				clone.GetComponent<SelectCard> ().id = hand.cards [i].id;
+				clone.name = "card_" + hand.cards [i].id;
 				clone.parent = transform;
 			}
 		}
@@ -61,7 +61,8 @@ public class InitialHand : MonoBehaviour {
 	} 
 
 	public void HandleGetInitialHand(string response){
-		cards = JsonUtility.FromJson<Hand> (response);
+		Debug.Log (response);
+		hand = JsonUtility.FromJson<Cards> (response);
 
 		RedrawCardsinHand ();
 	}
@@ -69,7 +70,7 @@ public class InitialHand : MonoBehaviour {
 	public void HandleDrawCard(string response){
 		Card card = JsonUtility.FromJson<Card> (response);
 
-		cards.hand.Add (card);
+		hand.cards.Add (card);
 		RedrawCardsinHand ();
 	}
 }

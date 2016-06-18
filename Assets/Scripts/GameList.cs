@@ -54,7 +54,26 @@ public class GameList : MonoBehaviour {
 		Debug.Log (collection.games[0].status);
 	}
 
-	public void createGame(){
+	public void generatePlayer(){
+		string url = "/player/generate";
+		StartCoroutine(HttpRequest.SendRequest(url, handleGeneratePlayer, "POST", "body"));
+	}
+
+	public void handleGeneratePlayer(string response){
+		Player player = JsonUtility.FromJson<Player> (response);
+
+		string url = "/game";
+		StartCoroutine(HttpRequest.SendRequest(url, handleCreateGame, "POST", "body", player.username, player.password));
+	}
+
+	public void handleCreateGame(string response){
+		// Parse game info
+		Game game = JsonUtility.FromJson<Game>(response);
+
+		// Store credentials and game_id in global object
+
+
+		// Switch to new scene
 
 	}
 
