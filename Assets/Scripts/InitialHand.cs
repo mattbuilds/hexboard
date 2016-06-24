@@ -47,6 +47,7 @@ public class InitialHand : MonoBehaviour {
 	}
 
 	public void GetInitialHand(){
+		Debug.Log("Hi");
 		string url = "/game/" + Config.instance.game_id+"/hand";
 		StartCoroutine(HttpRequest.SendRequest(url, HandleGetInitialHand, "GET", "body", Config.instance.username, Config.instance.password));
 	}

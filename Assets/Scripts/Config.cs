@@ -15,11 +15,19 @@ public class Config : MonoBehaviour {
 	public Transform cardMovementPrefab;
 	public GameObject you_score;
 	public GameObject them_score;
+	public GameObject waiting;
+	public GameObject hand;
+	public bool game_waiting;
 	private Dictionary<string, Dictionary<int,int>> cardMovementDict;
 
 	// Use this for initialization
 	void Start () {
+		username = PlayerPreferencs.username;
+		password = PlayerPreferencs.password;
+		player_id = PlayerPreferencs.player_id;
+		game_id = PlayerPreferencs.game_id;
 		turn = true;
+		game_waiting = true;
 		cardMovementDict = new Dictionary<string, Dictionary<int,int>> ();
 		GameState ();
 		InvokeRepeating ("GameState", 2.0f, 10.0f);
@@ -35,6 +43,15 @@ public class Config : MonoBehaviour {
 	void HandleGameState(string response){
 		Debug.Log (response);
 		CurrentGame game = JsonUtility.FromJson<CurrentGame> (response);
+
+		//Check if game started yet
+		if(game.status.Equals("starting") && game_waiting){
+			return;
+		}else{
+			waiting.SetActive(false);
+			game_waiting = false;
+			hand.GetComponent<InitialHand>().GetInitialHand();
+		}
 
 		//Check turn
 		if (game.turn.id == player_id)

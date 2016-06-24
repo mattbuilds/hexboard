@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 [System.Serializable]
@@ -33,6 +34,7 @@ public class GameList : MonoBehaviour {
 	}
 
 	public void handleGetGames(string response){
+		Debug.Log(response);
 		Games collection = JsonUtility.FromJson<Games> (response);
 
 		foreach (Transform child in transform) {
@@ -49,35 +51,64 @@ public class GameList : MonoBehaviour {
 			clone.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f,y,0.0f);
 			clone.transform.Find ("Id").GetComponent<UnityEngine.UI.Text>().text = collection.games [i].id.ToString();
 			clone.transform.Find ("Status").GetComponent<UnityEngine.UI.Text>().text = collection.games [i].status;
+			Button b = clone.GetComponent<Button>();
+			AddListener(b, collection.games [i].id);
 		} 
 
 		Debug.Log (collection.games[0].status);
 	}
-
-	public void generatePlayer(){
-		string url = "/player/generate";
-		StartCoroutine(HttpRequest.SendRequest(url, handleGeneratePlayer, "POST", "body"));
+	void AddListener(Button b, int value) 
+	{
+		b.onClick.AddListener(() => joinGame(value));
 	}
 
-	public void handleGeneratePlayer(string response){
-		Player player = JsonUtility.FromJson<Player> (response);
-
-		string url = "/game";
-		StartCoroutine(HttpRequest.SendRequest(url, handleCreateGame, "POST", "body", player.username, player.password));
+	public void createGame(){
+		string url = "/player/generate";
+		StartCoroutine(HttpRequest.SendRequest(url, handleCreateGame, "POST", "body"));
 	}
 
 	public void handleCreateGame(string response){
+		Player player = JsonUtility.FromJson<Player> (response);
+
+		PlayerPreferencs.username = player.username;
+		PlayerPreferencs.password = player.password;
+		PlayerPreferencs.player_id = player.id;
+
+		string url = "/game";
+		StartCoroutine(HttpRequest.SendRequest(url, handleCreateSwitch, "POST", "body", player.username, player.password));
+	}
+
+	public void handleCreateSwitch(string response){
 		// Parse game info
 		Game game = JsonUtility.FromJson<Game>(response);
 
 		// Store credentials and game_id in global object
-
+		PlayerPreferencs.game_id = game.id;
 
 		// Switch to new scene
+		Application.LoadLevel(1);
+	}
+
+	public void joinGame(int game_id){
+		string url = "/player/generate";
+		PlayerPreferencs.game_id = game_id;
+		StartCoroutine(HttpRequest.SendRequest(url, handleJoinGame, "POST", "body"));
+	}
+
+	public void handleJoinGame(string response){
+		Player player = JsonUtility.FromJson<Player> (response);
+
+		PlayerPreferencs.username = player.username;
+		PlayerPreferencs.password = player.password;
+		PlayerPreferencs.player_id = player.id;
+
+		string url = "/game/"+PlayerPreferencs.game_id;
+		StartCoroutine(HttpRequest.SendRequest(url, handleJoinSwitch, "POST", "body", player.username, player.password));
 
 	}
 
-	public void joinGame(){
-
+	public void handleJoinSwitch(string response){
+		// Switch to new scene
+		Application.LoadLevel(1);
 	}
 }
