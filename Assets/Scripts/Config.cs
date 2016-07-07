@@ -15,6 +15,7 @@ public class Config : MonoBehaviour {
 	public Transform cardMovementPrefab;
 	public GameObject you_score;
 	public GameObject them_score;
+	public GameObject turn_label;
 	public GameObject waiting;
 	public GameObject hand;
 	public bool game_waiting;
@@ -40,6 +41,14 @@ public class Config : MonoBehaviour {
 		StartCoroutine(HttpRequest.SendRequest(url, HandleGameState, "GET", "body", username, password));
 	}
 
+	public void SwitchTurnLabel(){
+		// Update turn label
+		if (turn)
+			turn_label.GetComponent<Text> ().text = "It is your turn.";
+		else
+			turn_label.GetComponent<Text> ().text = "Waiting for opponent";
+	}
+
 	void HandleGameState(string response){
 		Debug.Log (response);
 		CurrentGame game = JsonUtility.FromJson<CurrentGame> (response);
@@ -58,6 +67,9 @@ public class Config : MonoBehaviour {
 			turn = true;
 		else
 			turn = false;
+
+		// Update turn label
+		SwitchTurnLabel();
 
 		//Update opponents's location
 		for (int i = 0; i < game.board_played.meeples.Length; i++) {

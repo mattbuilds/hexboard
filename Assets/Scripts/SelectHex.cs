@@ -30,6 +30,7 @@ public class SelectHex : MonoBehaviour {
 
 			//End Turn
 			Config.instance.turn = false;
+			Config.instance.SwitchTurnLabel();
 		}
 
 		//For playing a card
@@ -53,6 +54,7 @@ public class SelectHex : MonoBehaviour {
 
 			//End Turn
 			Config.instance.turn = false;
+			Config.instance.SwitchTurnLabel();
 		}
 	}
 }
