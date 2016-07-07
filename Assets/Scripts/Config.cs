@@ -16,7 +16,7 @@ public class Config : MonoBehaviour {
 	public GameObject you_score;
 	public GameObject them_score;
 	public GameObject turn_label;
-	public GameObject waiting;
+	public GameObject waiting; 
 	public GameObject hand;
 	public bool game_waiting;
 	private Dictionary<string, Dictionary<int,int>> cardMovementDict;
@@ -36,7 +36,6 @@ public class Config : MonoBehaviour {
 
 	//Call to get main game info
 	void GameState(){
-		Debug.Log ("Get it");
 		string url = "/game/"+game_id;
 		StartCoroutine(HttpRequest.SendRequest(url, HandleGameState, "GET", "body", username, password));
 	}
@@ -74,7 +73,14 @@ public class Config : MonoBehaviour {
 		//Update opponents's location
 		for (int i = 0; i < game.board_played.meeples.Length; i++) {
 			GameObject meeple = GameObject.Find ("meeple_" + game.board_played.meeples [i].id);
-			meeple.GetComponent<SelectPlayer> ().Move (game.board_played.meeples [i].board_space.x_loc, game.board_played.meeples [i].board_space.y_loc);
+			Debug.Log (game.board_played.meeples [i].finished);
+			if (game.board_played.meeples [i].finished && meeple != null) {
+				Destroy (meeple);
+			} else if (game.board_played.meeples [i].finished && meeple == null) {
+				continue;
+			} else {
+				meeple.GetComponent<SelectPlayer> ().Move (game.board_played.meeples [i].board_space.x_loc, game.board_played.meeples [i].board_space.y_loc);
+			}
 		}
 
 		//Update cards on board

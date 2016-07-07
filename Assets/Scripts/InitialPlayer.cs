@@ -11,6 +11,7 @@ public class BoardSpace{
 [System.Serializable]
 public class Meeple{
 	public int id;
+	public bool finished;
 	public BoardSpace board_space;
 	public Player player;
 }

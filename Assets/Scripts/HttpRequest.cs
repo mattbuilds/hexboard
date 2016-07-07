@@ -7,6 +7,8 @@ using System.Collections.Generic;
 public static class HttpRequest
 {
 
+	private static string ip_address = "http://192.168.1.107:5000";
+
 	private static string getBasic(string username, string password){
 		string result = "Basic " + System.Convert.ToBase64String(
 			System.Text.Encoding.ASCII.GetBytes(username+":"+password));
@@ -16,11 +18,11 @@ public static class HttpRequest
 	public static IEnumerator SendRequest(string url, System.Action<string> onSuccess, string method, string body = null, string username = null, string password =null){
 		UnityWebRequest www;
 		if (method.Equals ("GET")) {
-			www = UnityWebRequest.Get ("http://127.0.0.1:5000" + url);
+			www = UnityWebRequest.Get (ip_address + url);
 		} else {
 			WWWForm form = new WWWForm ();
 			form.AddField ("bs", "bs");
-			www = UnityWebRequest.Post ("http://127.0.0.1:5000" + url, form);
+			www = UnityWebRequest.Post (ip_address + url, form);
 
 			byte[] rawJson = System.Text.Encoding.UTF8.GetBytes(body);
 			UploadHandler upload = new UploadHandlerRaw(rawJson);
