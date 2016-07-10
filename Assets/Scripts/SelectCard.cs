@@ -31,8 +31,15 @@ public class SelectCard : MonoBehaviour {
 			return;
 		}
 
-		//If a player is already selected, return and don't allow selection
-		foreach (Transform child in transform.parent) {
+		//If a player or card is already selected, return and don't allow selection
+		foreach (Transform child in transform.parent.parent) {
+			if (child.name == "Hand") {
+				foreach (Transform granchild in child) {
+					if (granchild.GetComponent<SelectCard>().selected)
+						return;
+				}
+			}
+
 			if (child.name == "Players") {
 				foreach (Transform grandchild in child) {
 					if (grandchild.GetComponent<SelectPlayer> ().selected)

@@ -50,20 +50,20 @@ public class SelectPlayer : MonoBehaviour {
 			return;
 		} 	
 
-		//If another player is already selected, don't allow a selection
-		foreach (Transform child in transform.parent) 
-		{
-			if (child !=transform)
-				if (child.GetComponent<SelectPlayer>().selected)
-					return;
-		}
+		//If a player is already selected, return and don't allow selection
+		foreach (Transform child in transform.parent.parent) {
+			if (child.name == "Hand") {
+				foreach (Transform granchild in child) {
+					if (granchild.GetComponent<SelectCard>().selected)
+						return;
+				}
+			}
 
-		//If a card is already selected, don't allow a selection of a player
-		foreach (Transform child in transform.parent.parent)
-		{
-			if (child.name == "card") {
-				if (child.GetComponent<SelectCard> ().selected)
-					return;
+			if (child.name == "Players") {
+				foreach (Transform grandchild in child) {
+					if (grandchild.GetComponent<SelectPlayer> ().selected)
+						return;
+				}
 			}
 		}
 			
