@@ -4,6 +4,7 @@ using System.Collections;
 public class InitialHand : MonoBehaviour {
 	public Transform tilePrefab;
 	private Cards hand;
+	private int row_length =7;
 	// Use this for initialization
 	void Start () {
 		GetInitialHand ();
@@ -26,13 +27,17 @@ public class InitialHand : MonoBehaviour {
 		for (int i = 0; i < hand.cards.Count; i++) {
 			Transform clone;
 			GameObject card_object;
-			float y = 3f + (-1.2f * i);
+			int x_section = i / row_length;
+			float y = 0;
+			float x = 0;
+			y = 4f + (-1.2f * (i-x_section*row_length));
+			x = -9f + (x_section);
 			card_object = GameObject.Find ("card_" + hand.cards [i].id);
 			if (card_object) {
 				clone = card_object.transform;
-				clone.position = new Vector3 (-7f, y, -5f);
+				clone.position = new Vector3 (x, y, -5f);
 			} else {
-				clone = (Transform)Instantiate (tilePrefab, new Vector3 (-7f, y, -5f), tilePrefab.rotation);
+				clone = (Transform)Instantiate (tilePrefab, new Vector3 (x, y, -5f), tilePrefab.rotation);
 				if ( hand.cards[i].value.Equals("P")){
 					clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite>("moving_" + hand.cards[i].direction);
 					Config.instance.SetCardColor (clone.gameObject, hand.cards [i].color);
@@ -57,7 +62,6 @@ public class InitialHand : MonoBehaviour {
 
 		string url = "/game/" + Config.instance.game_id + "/draw";
 		StartCoroutine(HttpRequest.SendRequest(url, HandleDrawCard, "GET", "body", Config.instance.username, Config.instance.password));
-		Config.instance.turn = false;
 	} 
 
 	public void HandleGetInitialHand(string response){
@@ -71,6 +75,8 @@ public class InitialHand : MonoBehaviour {
 		Card card = JsonUtility.FromJson<Card> (response);
 
 		hand.cards.Add (card);
+		Config.instance.turn = false;
+		Config.instance.SwitchTurnLabel ();
 		RedrawCardsinHand ();
 	}
 }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public static class HttpRequest
 {
 
-	private static string ip_address = "http://192.168.1.107:5000";
+	private static string ip_address = "http://192.168.1.109:5000";
 
 	private static string getBasic(string username, string password){
 		string result = "Basic " + System.Convert.ToBase64String(
