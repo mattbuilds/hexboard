@@ -75,8 +75,7 @@ public class InitialHand : MonoBehaviour {
 		Card card = JsonUtility.FromJson<Card> (response);
 
 		hand.cards.Add (card);
-		Config.instance.turn = false;
-		Config.instance.SwitchTurnLabel ();
+		Config.instance.MoveSent ();
 		RedrawCardsinHand ();
 	}
 }

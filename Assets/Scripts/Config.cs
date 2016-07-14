@@ -8,8 +8,7 @@ public class Config : MonoBehaviour {
 	public static Config instance;
 	public string username;
 	public string password;
-	public int game_id;
-	public int player_id;
+	public int game_id, move_count, player_id;
 	public bool turn;
 	public Transform cardPrefab;
 	public Transform cardMovementPrefab;
@@ -28,6 +27,7 @@ public class Config : MonoBehaviour {
 		player_id = PlayerPreferencs.player_id;
 		game_id = PlayerPreferencs.game_id;
 		turn = true;
+		move_count = 0;
 		game_waiting = true;
 		cardMovementDict = new Dictionary<string, Dictionary<int,int>> ();
 		GameState ();
@@ -38,6 +38,15 @@ public class Config : MonoBehaviour {
 	void GameState(){
 		string url = "/game/"+game_id;
 		StartCoroutine(HttpRequest.SendRequest(url, HandleGameState, "GET", "body", username, password));
+	}
+
+	public void MoveSent(){
+		move_count++;
+		if (move_count > 1) {
+			this.move_count = 0;
+			this.turn = false;
+			this.SwitchTurnLabel ();
+		}
 	}
 
 	public void SwitchTurnLabel(){
@@ -101,28 +110,7 @@ public class Config : MonoBehaviour {
 
 			card.GetComponent<SelectCard> ().Move (game.board_played.cards [i].board_space.x_loc, game.board_played.cards [i].board_space.y_loc);
 		}
-
-		//Update card_movement on board
-		for (int i = 0; i < game.board_played.card_movement.Length; i++) {
-			GameObject card_movement = GameObject.Find ("card_movement_" + game.board_played.card_movement [i].id);
-			if (game.board_played.card_movement [i].card.finished && card_movement != null) {
-				Destroy (card_movement);
-			} else if (game.board_played.card_movement [i].card.finished && card_movement == null) {
-				continue;
-			} else if (card_movement == null) {
-				card_movement = CreateCardMovement (game.board_played.card_movement [i]);
-				string board_space = game.board_played.card_movement [i].board_space.x_loc.ToString () +
-				                     game.board_played.card_movement [i].board_space.y_loc.ToString ();
-				CreateDictionaryLookup (
-					cardMovementDict,
-					board_space,
-					game.board_played.card_movement [i].id,
-					game.board_played.card_movement [i].card.color
-				);
-			}
-
-			SetCardColor (card_movement, game.board_played.card_movement [i].card.color);
-		}
+			
 
 		//Set the score for each player
 		if (game.hosting.id == player_id) {
@@ -131,40 +119,6 @@ public class Config : MonoBehaviour {
 		} else {
 			you_score.GetComponent<Text> ().text = game.joining.score.ToString();
 			them_score.GetComponent<Text> ().text = game.hosting.score.ToString();
-		}
-	}
-
-	public void CreateDictionaryLookup(Dictionary<string, Dictionary<int,int>> dict, string board_space, int key, int value){
-		Dictionary<int, int> dict_item;
-		if (dict.TryGetValue (board_space, out dict_item)) {
-			Debug.Log (dict_item.Keys);
-			Debug.Log (key);
-			dict_item.Add (key, value);
-			dict [board_space] = dict_item;
-		} else {
-			dict_item = new Dictionary<int,int> ();
-			dict_item.Add (key, value);
-			dict.Add (board_space, dict_item);
-		}
-
-		ResizeDictionaryScale (dict_item);
-	}
-
-	public void RemoveDictionaryLookup(Dictionary<string, Dictionary<int,int>> dict, string board_space, int key, int value){
-		Dictionary<int, int> dict_item;
-		dict.TryGetValue (board_space, out dict_item);
-		dict_item.Remove (key);
-
-		ResizeDictionaryScale (dict_item);
-	}
-
-	public void ResizeDictionaryScale(Dictionary<int,int> dict_item){
-		int count = 0;
-		foreach (KeyValuePair<int,int> pair in dict_item) {
-			GameObject card_movement = GameObject.Find ("card_movement_" + pair.Key);
-			float scale = count * .15f;
-			card_movement.transform.localScale = new Vector3(1f-scale,1f-scale,1f);
-			count++;
 		}
 	}
 
@@ -197,16 +151,6 @@ public class Config : MonoBehaviour {
 		}
 		clone.GetComponent<SelectCard> ().id = card.id;
 		clone.name = "card_" + card.id;
-
-		return clone.gameObject;
-	}
-
-	public GameObject CreateCardMovement(CardMovement card_movement){
-		Vector2 position = PositionCoordinates.CoordiatesToPosition (card_movement.board_space.x_loc, card_movement.board_space.y_loc);
-		Transform clone;
-		clone = (Transform)Instantiate (cardMovementPrefab, new Vector3 (position.x, position.y, -6f), cardMovementPrefab.rotation);
-		clone.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("card_movement");
-		clone.name = "card_movement_" + card_movement.id;
 
 		return clone.gameObject;
 	}

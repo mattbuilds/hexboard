@@ -80,6 +80,7 @@ public class GameList : MonoBehaviour {
 
 	public void handleCreateSwitch(string response){
 		// Parse game info
+		Debug.Log(response);
 		Game game = JsonUtility.FromJson<Game>(response);
 
 		// Store credentials and game_id in global object
