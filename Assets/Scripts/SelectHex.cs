@@ -23,7 +23,7 @@ public class SelectHex : MonoBehaviour {
 
 			//If fine, move shit
 			move_player.GetComponent<SelectPlayer> ().ResetColors ();
-			move_player.transform.position = transform.position;
+			move_player.transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
 
 			//Send Move to Server
 			move_player.GetComponent<SelectPlayer>().SendMove();

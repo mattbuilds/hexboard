@@ -12,9 +12,8 @@ public class Config : MonoBehaviour {
 	public bool turn;
 	public Transform cardPrefab;
 	public Transform cardMovementPrefab;
-	public GameObject you_score;
-	public GameObject them_score;
 	public GameObject turn_label;
+	public GameObject move_label;
 	public GameObject waiting; 
 	public GameObject hand;
 	public bool game_waiting;
@@ -26,7 +25,7 @@ public class Config : MonoBehaviour {
 		password = PlayerPreferencs.password;
 		player_id = PlayerPreferencs.player_id;
 		game_id = PlayerPreferencs.game_id;
-		turn = true;
+		turn = false;
 		move_count = 0;
 		game_waiting = true;
 		cardMovementDict = new Dictionary<string, Dictionary<int,int>> ();
@@ -36,6 +35,8 @@ public class Config : MonoBehaviour {
 
 	//Call to get main game info
 	void GameState(){
+		if (turn)
+			return;
 		string url = "/game/"+game_id;
 		StartCoroutine(HttpRequest.SendRequest(url, HandleGameState, "GET", "body", username, password));
 	}
@@ -51,20 +52,36 @@ public class Config : MonoBehaviour {
 
 	public void SwitchTurnLabel(){
 		// Update turn label
-		if (turn)
+		if (turn) {
+			move_label.SetActive(true);
 			turn_label.GetComponent<Text> ().text = "It is your turn.";
-		else
+			if (move_count == 0) {
+				move_label.GetComponent<Text> ().text = "You have 2 moves left";
+			} else {
+				move_label.GetComponent<Text> ().text = "You have 1 move left";
+			}
+		}else{
 			turn_label.GetComponent<Text> ().text = "Waiting for opponent";
+			move_label.SetActive(false);
+		}
 	}
 
-	void HandleGameState(string response){
+	public void HandleGameState(string response){
 		Debug.Log (response);
 		CurrentGame game = JsonUtility.FromJson<CurrentGame> (response);
 
 		//Check if game started yet
 		if(game.status.Equals("starting") && game_waiting){
 			return;
-		}else{
+		}else if(game.status.Equals("Done")){
+			if (game.winner.id == player_id) {
+				waiting.GetComponent<Text> ().text = "You win";
+			} else {
+				waiting.GetComponent<Text> ().text = "You lose";
+			}
+			game_waiting = true;
+			waiting.SetActive (true);
+		} else{
 			waiting.SetActive(false);
 			game_waiting = false;
 			hand.GetComponent<InitialHand>().GetInitialHand();
@@ -82,7 +99,6 @@ public class Config : MonoBehaviour {
 		//Update opponents's location
 		for (int i = 0; i < game.board_played.meeples.Length; i++) {
 			GameObject meeple = GameObject.Find ("meeple_" + game.board_played.meeples [i].id);
-			Debug.Log (game.board_played.meeples [i].finished);
 			if (game.board_played.meeples [i].finished && meeple != null) {
 				Destroy (meeple);
 			} else if (game.board_played.meeples [i].finished && meeple == null) {
@@ -109,16 +125,6 @@ public class Config : MonoBehaviour {
 			}
 
 			card.GetComponent<SelectCard> ().Move (game.board_played.cards [i].board_space.x_loc, game.board_played.cards [i].board_space.y_loc);
-		}
-			
-
-		//Set the score for each player
-		if (game.hosting.id == player_id) {
-			you_score.GetComponent<Text> ().text = game.hosting.score.ToString();
-			them_score.GetComponent<Text> ().text = game.joining.score.ToString();
-		} else {
-			you_score.GetComponent<Text> ().text = game.joining.score.ToString();
-			them_score.GetComponent<Text> ().text = game.hosting.score.ToString();
 		}
 	}
 

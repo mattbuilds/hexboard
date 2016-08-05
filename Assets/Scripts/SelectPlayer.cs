@@ -3,16 +3,17 @@ using System;
 using System.Collections;
 
 public static class  PositionCoordinates{
-	public static float x_off = .8f;
-	public static float y_off = 1.05f;
+	public static float x_off = .56f;
+	public static float y_off = .735f;
 
 	public static Vector2 CoordiatesToPosition (int x, int y){
-		return new Vector2 (x * x_off, (y * y_off) - (x * .5f * y_off));
+		return new Vector2 (x * x_off, (y * y_off) - (x * .5f * y_off)+1.5f );
 	}
 
 	public static Vector2 PositionToCoordinates(Vector3 position){
+		position.y = position.y - 1.5f;
 		float x_result = (position.x / x_off);
-		float y_result = ((position.y / y_off) + .5f * position.x / x_off);
+		float y_result = ((position.y / y_off) + (.5f * position.x / x_off));
 		return new Vector2 (Convert.ToInt32(x_result), Convert.ToInt32(y_result));
 	}
 }
@@ -74,7 +75,7 @@ public class SelectPlayer : MonoBehaviour {
 
 	public void ResetColors(){
 		selected = false;
-		SetMoveColor (Color.white);
+		SetMoveColor (new Color(80/255F, 89/255F, 129/255F, 1F));
 	}
 
 	public void Move(int x, int y){
@@ -99,10 +100,11 @@ public class SelectPlayer : MonoBehaviour {
 	}
 
 	public void HandleMoveMeep(string response){
-		Debug.Log (response);
+		Config.instance.HandleGameState (response);
 	}
 
 	public void SetMoveColor(Color color){
+		Debug.Log (transform.position);
 		Vector2 player = PositionCoordinates.PositionToCoordinates(transform.position);
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++) {

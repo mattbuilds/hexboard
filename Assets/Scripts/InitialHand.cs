@@ -4,7 +4,7 @@ using System.Collections;
 public class InitialHand : MonoBehaviour {
 	public Transform tilePrefab;
 	private Cards hand;
-	private int row_length =7;
+	private int row_length =6;
 	// Use this for initialization
 	void Start () {
 		GetInitialHand ();
@@ -30,8 +30,9 @@ public class InitialHand : MonoBehaviour {
 			int x_section = i / row_length;
 			float y = 0;
 			float x = 0;
-			y = 4f + (-1.2f * (i-x_section*row_length));
-			x = -9f + (x_section);
+			x = -3f + .725f *(i-x_section*row_length);
+			y = -4f - x_section*.8f;
+
 			card_object = GameObject.Find ("card_" + hand.cards [i].id);
 			if (card_object) {
 				clone = card_object.transform;
@@ -72,10 +73,12 @@ public class InitialHand : MonoBehaviour {
 	}
 
 	public void HandleDrawCard(string response){
-		Card card = JsonUtility.FromJson<Card> (response);
+		Config.instance.MoveSent();
+		Config.instance.HandleGameState (response);
+		//Card card = JsonUtility.FromJson<Card> (response);
 
-		hand.cards.Add (card);
-		Config.instance.MoveSent ();
-		RedrawCardsinHand ();
+		//hand.cards.Add (card);
+		//Config.instance.MoveSent ();
+		//RedrawCardsinHand ();
 	}
 }

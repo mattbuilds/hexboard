@@ -20,6 +20,8 @@ public class GameList : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		games = new Games ();
+		getGames ();
+		InvokeRepeating ("getGames", 2.0f, 10.0f);
 	}
 	
 	// Update is called once per frame
@@ -42,15 +44,14 @@ public class GameList : MonoBehaviour {
 		}
 
 		for (int i = 0; i < collection.games.Length; i++) {
-			float y = -20f + i * -40f;
+			float y = -63.5f + i * -120f;
 
 			GameObject clone;
 			clone = (GameObject)Instantiate(button_game_prefab, new Vector3(0,0,0), Quaternion.identity);
 			clone.transform.SetParent(transform);
 			clone.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
 			clone.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f,y,0.0f);
-			clone.transform.Find ("Id").GetComponent<UnityEngine.UI.Text>().text = collection.games [i].id.ToString();
-			clone.transform.Find ("Status").GetComponent<UnityEngine.UI.Text>().text = collection.games [i].status;
+			clone.transform.Find ("Id").GetComponent<UnityEngine.UI.Text>().text = "Join Game " + collection.games [i].id.ToString();
 			Button b = clone.GetComponent<Button>();
 			AddListener(b, collection.games [i].id);
 		} 

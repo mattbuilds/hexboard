@@ -26,7 +26,7 @@ public class SelectCard : MonoBehaviour {
 			return;
 
 		if (selected) {
-			LoopPlayers (Color.white);
+			LoopPlayers (new Color(80/255F, 89/255F, 129/255F, 1F));
 			selected = false;
 			return;
 		}
@@ -53,12 +53,19 @@ public class SelectCard : MonoBehaviour {
 	}
 
 	public void Move(int x, int y){
-		transform.position = PositionCoordinates.CoordiatesToPosition (x, y);
-		transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
+
+		Vector3 endPos = PositionCoordinates.CoordiatesToPosition (x, y);
+		endPos = new Vector3 (endPos.x, endPos.y, -2.0f);
+
+		transform.position = Vector3.Lerp(transform.position, PositionCoordinates.CoordiatesToPosition (x, y), 1.0f);
+
+		//transform.position = PositionCoordinates.CoordiatesToPosition (x, y);
+		//transform.position = new Vector3(transform.position.x, transform.position.y, -2.0f);
+
 	}
 
 	public void ResetPlayers(){
-		LoopPlayers (Color.white);
+		LoopPlayers (new Color(80/255F, 89/255F, 129/255F, 1F));
 		selected = false;
 	}
 
@@ -79,7 +86,7 @@ public class SelectCard : MonoBehaviour {
 	}
 
 	public void HandleSendPlayCard(string response){
-		Debug.Log (response);
+		Config.instance.HandleGameState (response);
 	}
 
 	private void LoopPlayers(Color color){

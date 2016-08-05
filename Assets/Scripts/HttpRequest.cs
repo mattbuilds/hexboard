@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Experimental.Networking;
+using UnityEngine.Networking;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public static class HttpRequest
 {
 
-	private static string ip_address = "http://192.168.1.109:5000";
+	private static string ip_address = "http://104.131.200.26";
 
 	private static string getBasic(string username, string password){
 		string result = "Basic " + System.Convert.ToBase64String(

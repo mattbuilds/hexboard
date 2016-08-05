@@ -67,6 +67,7 @@ public class CurrentGame{
 	public Player hosting;
 	public Player joining;
 	public Player turn;
+	public Player winner;
 }
 
 
@@ -92,6 +93,8 @@ public class InitialPlayer : MonoBehaviour {
 
 		if (!my_player)
 			clone.GetComponent<SpriteRenderer> ().material.color = Color.red;
+		else
+			clone.GetComponent<SpriteRenderer> ().material.color = Color.blue;
 
 		clone.position = new Vector3 (clone.position.x, clone.position.y, -1);
 		clone.parent = transform;

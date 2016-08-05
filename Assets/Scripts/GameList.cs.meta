@@ -1,10 +1,12 @@
 fileFormatVersion: 2
 guid: 08be4aed66b615b408934cce73afc7a2
-timeCreated: 1460845950
+timeCreated: 1469976103
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - button_game_prefab: {fileID: 1000013662444022, guid: fab0694a5f4880143a0c1799a0ee636e,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
